@@ -18,5 +18,8 @@ exports = {
     DEFAULT_SORT: "date_updated",
 
     // user roles in the application
-    ROLES : ["ADMIN", "USER"]
+    ROLES : ["ADMIN", "USER"],
+
+    // a default role when none is provided
+    DEFAULT_ROLE : "USER"
 };
