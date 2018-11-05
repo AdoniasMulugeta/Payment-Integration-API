@@ -3,9 +3,9 @@ const mongoose = require("mongoose");
 
 // define the schema for the model 
 const transactionModel = new mongoose.Schema({
-    from_wallet      : { type : mongoose.ObjectId, ref : "wallet"},
-    to_wallet        : { type : mongoose.ObjectId, ref : "wallet"},
-    transaction_date : { type: Date },
+    from_wallet      : { type : mongoose.ObjectId, ref : "wallet", required: true},
+    to_wallet        : { type : mongoose.ObjectId, ref : "wallet", required: true},
+    transaction_date : { type : Date },
     created_at       : { type : Date },
     updated_at       : { type : Date }
 });
