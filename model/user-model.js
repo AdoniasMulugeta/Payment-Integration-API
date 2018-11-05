@@ -1,10 +1,14 @@
 // import third-party modules
 const mongoose = require("mongoose");
 
+// importing custom models
+const CONFIG   = require("../config");
+
 // define the schema for the model
 const userModel = new mongoose.Schema({
-    email      : { type: string, required: true},
-    password   : { type: string, required:true},
+    email      : { type : String, required: true},
+    password   : { type : String, required:true},
+    role       : { type : String, required:true, enum:CONFIG.ROLES},
     created_at : { type : Date },
     updated_at : { type : Date }
 });

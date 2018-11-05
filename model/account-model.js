@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const accountModel = new mongoose.Schema({
     wallet_id     : { type : mongoose.ObjectId, ref : "wallet"},
-    transactions  : [{ type : mongoose.ObjectId, ref: "transaction"}],
+    transactions  : [{type : mongoose.ObjectId, ref : "transaction"}],
     created_at    : { type : Date },
     updated_at    : { type : Date }
 });

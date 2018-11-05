@@ -15,5 +15,8 @@ exports = {
     MAX_PAGE_SIZE: 2,
 
     // pagination default selected sorting field,
-    DEFAULT_SORT: "date_updated"
+    DEFAULT_SORT: "date_updated",
+
+    // user roles in the application
+    ROLES : ["ADMIN", "USER"]
 };
