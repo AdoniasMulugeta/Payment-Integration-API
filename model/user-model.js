@@ -11,6 +11,7 @@ const userModel = new mongoose.Schema({
     role       : { type : String, required: true,
                    enum : CONFIG.ROLES,
                    default: CONFIG.DEFAULT_ROLE},
+    enabled    : { type : Boolean, default: true},
     created_at : { type : Date },
     updated_at : { type : Date }
 });
