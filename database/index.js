@@ -2,18 +2,19 @@
 const mongoose = require('mongoose');
 
 //import custom modules
-const config   = require('../config');
+const CONFIG   = require('../config');
 
-exports.mongoose.connect = ()=>{
+exports.connect = () => {
+
+    //create a connection to mongoose database
+    mongoose.connect(CONFIG.DB_URL, {useNewUrlParser: true});
+
     //get a handle of the mongoose connection object
     const connection = mongoose.connection;
 
-    //create a connection to mongoose database
-    connection.connect(config.DB-URL);
-
     // event listener when connection is successful
-    connection.on('connected',(conn)=> {
-        console.log("mongoose database connection successful ;)");
+    connection.on('connected',()=> {
+        console.log("\nmongoose database connection successful ;)\n", CONFIG.DB_URL);
     });
 
     // event listener for when connection fails
