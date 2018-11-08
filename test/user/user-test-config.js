@@ -10,13 +10,16 @@ exports.deleteAll = async () => {
     await userModel.deleteMany({});
 };
 exports.signUp = async ({name, email, password, role}) => {
-    return request(app).post('/auth/signup').send({
+    return await request(app).post('/auth/signup').send({
         name: name,
         email: email,
         password: password,
         role: role
     })
 };
-exports.logIn = ({email, password})=>{
-    return request(app).post('/auth/signin')
+exports.logIn = async ({email, password})=>{
+    return await request(app).post('/auth/signin').send({
+        email: email,
+        password : password
+    })
 }
