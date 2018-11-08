@@ -22,14 +22,27 @@ const ROLES = ["ADMIN", "USER"];
 // a default role when none is provided
 const DEFAULT_ROLE = "USER";
 
+//get env variable
+const NODE_ENV = process.env.NODE_ENV;
 //select test database if it is on test environment
-console.log("test RUN out")
-if (process.env.NODE_ENV === 'test') {
-    DB_URL += '-test';
-    SERVER_PORT = 3001;
-    console.log("test RUN in")
+
+if(NODE_ENV === 'test'){
+    DB_URL += "-test"
+}
+else if(NODE_ENV === 'development'){
+    DB_URL += "-dev"
 }
 
+const user = require("../app/user/user-model");
+u = new user({
+    name: "adonias",
+    email:"adonia@gmail.com",
+    password:"1234",
+    role:"USER"
+}).save()
+
+
+
 module.exports = {
-    DB_URL, DEFAULT_ROLE, DEFAULT_SORT, MAX_PAGE_SIZE, JWT_SECRET, ROLES, SALT_ROUNDS, SERVER_PORT
+    DB_URL, DEFAULT_ROLE, DEFAULT_SORT, MAX_PAGE_SIZE, JWT_SECRET, ROLES, SALT_ROUNDS, SERVER_PORT, NODE_ENV
 };

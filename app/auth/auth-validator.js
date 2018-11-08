@@ -11,7 +11,11 @@ exports.signUp = [
     check('email')
         .exists().withMessage("email is required")
         .isEmail().withMessage("email not valid")
-        .custom(async email => !await userDal.getUsers({email: email}).length )
+        .custom(async email => {
+            const user = await userDal.getUsers({email: email});
+            if(user.length > 0) return false;
+            else return user;
+        })
         .withMessage("An account already exists with this email"),
 
     check('password')
@@ -36,7 +40,6 @@ exports.errorHandler = (request, response, next)=>{
         response.status(422).json({
             status : 422,
             type: "error",
-            message: "authentication failed",
             errors: errors.array()
         });
     }

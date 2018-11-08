@@ -1,3 +1,5 @@
+
+
 const app = require('../../app');
 const userModel = require('../../app/user/user-model');
 const request = require('supertest');
@@ -15,3 +17,6 @@ exports.signUp = async ({name, email, password, role}) => {
         role: role
     })
 };
+exports.logIn = ({email, password})=>{
+    return request(app).post('/auth/signin')
+}
