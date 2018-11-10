@@ -57,12 +57,12 @@ exports.signUp = async (request, response) => {
 exports.validateToken = async (request, response, next)=>{
     const token = request.headers['authorization'];
     if(!token){
-        response.status(401).json({
+        response.status(400).json({
             status: "error",
-            status_code : 401,
+            status_code : 400,
             error:{
                 err_code : "TOKEN_MISSING",
-                message: "No authentication token found in header"
+                msg: "No authentication token found in header"
             }
         });
         return;
@@ -74,22 +74,22 @@ exports.validateToken = async (request, response, next)=>{
     }
     catch(error) {
         response.json({
-            status : 401,
+            status : 400,
             type: "Error",
             error:{
-                message: error.message,
+                msg: error.message,
                 err_code : "INVALID_TOKEN"
             }
         });
     }
 };
 function sendError(response) {
-    response.status(401).json({
-        status: 401,
+    response.status(400).json({
+        status: 400,
         type: "error",
         errors: [
             {
-                message: "Authentication Failed",
+                msg: "Authentication Failed",
                 error_code: "AUTH_FAILED"
             }
         ]

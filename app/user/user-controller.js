@@ -3,9 +3,13 @@ const userDal = require("../user/user-dal");
 exports.getUser = async (request, response)=>{
     const user = await userDal.getById(request.params.id).catch(error => {
         response.status(500).json({
-            error : true,
-            desc  : "Internal error",
-            message : error.message
+            type : "error",
+            status: 500,
+            error  : [
+                {
+                    msg : error.message
+                }
+            ]
         })
     });
     response.json(user);
