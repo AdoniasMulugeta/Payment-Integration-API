@@ -2,7 +2,7 @@
 const mongoose = require("mongoose");
 
 // importing custom models
-const CONFIG   = require("../config");
+const CONFIG   = require("../../config");
 
 // define the schema for the model
 const userModel = new mongoose.Schema({
@@ -34,4 +34,4 @@ userModel.pre('findOneAndUpdate', function(next){
 });
 
 //expose the model to the outside scripts
-exports = mongoose.model("user", userModel);
+module.exports = mongoose.model("user", userModel);

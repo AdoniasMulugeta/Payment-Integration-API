@@ -3,17 +3,8 @@ const mongoose = require("mongoose");
 const accountModel = new mongoose.Schema({
     wallet_id     : { type : mongoose.ObjectId, ref : "wallet"},
     transactions  : [{type : mongoose.ObjectId, ref : "transaction"}],
-    created_at    : { type : Date },
-    updated_at    : { type : Date }
-});
-
-// database hooks
-// run this before every new record is saved
-accountModel.pre('save', function (next) {
-    let now = (new Date()).toISOString();
-    this.created_at = now;
-    this.updated_at = now;
-    next()
+    created_at    : { type : Date , default: Date.now()},
+    updated_at    : { type : Date , default: Date.now()}
 });
 
 // run this before every update
