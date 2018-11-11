@@ -22,4 +22,11 @@ exports.logIn = async ({email, password})=>{
         email: email,
         password : password
     })
-}
+};
+exports.findOne = async id => {
+  return await request(app).get('/users/'+ id);
+};
+
+exports.findAll = async () => {
+  return await request(app).get('/users');
+};

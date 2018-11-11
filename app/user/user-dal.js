@@ -9,8 +9,8 @@ exports.getUsers     = async query => await userModel.find(query);
 
 exports.createUser   = async data  => await userModel.create(data);
 
-exports.updateUser   = async data  => await userModel.findOneAndUpdate({_id: data._id},{$set:data},{new: true});
+exports.updateUser   = async (id,data)  => await userModel.findOneAndUpdate({_id: id},{$set:data},{new: true});
 
-exports.removeUser   = async data  => await userModel.findOneAndDelete({_id: data._id});
+exports.removeUser   = async id  => await userModel.findOneAndDelete({_id: id});
 
 

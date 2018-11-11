@@ -65,10 +65,12 @@ exports.tokenValidator = async (request, response, next)=>{
         response.status(400).json({
             status : 400,
             type: "error",
-            error:{
-                err_code : "TOKEN_MISSING",
-                msg: "No authentication token found in header"
-            }
+            errors:[
+                {
+                    err_code : "TOKEN_MISSING",
+                    msg: "No authentication token found in header"
+                }
+            ]
         });
         return;
     }
@@ -81,10 +83,12 @@ exports.tokenValidator = async (request, response, next)=>{
         response.json({
             status : 400,
             type: "Error",
-            error:{
-                msg: error.message,
-                err_code : "INVALID_TOKEN"
-            }
+            errors:[
+                {
+                    msg: error.message,
+                    err_code : "INVALID_TOKEN"
+                }
+            ]
         });
     }
 };

@@ -2,7 +2,7 @@ const userDal = require("../user/user-dal");
 
 exports.getUser = async (request, response)=>{
     const user = await userDal.getUserById(request.params.id);
-    sendSuccess(response, user)
+    user ? sendSuccess(response, user) : sendError(response, 404, "user with that id doesn't exist.")
 };
 
 exports.getUsers = async (request, response)=>{
@@ -14,33 +14,30 @@ exports.searchUsers = async  (request, response)=>{
 
 };
 
-exports.createUsers = async (request, response)=>{
-
-
-};
-
 exports.updateUser = async (request, response)=>{
-    const user = await userDal.updateUser(request.body)
-    sendSuccess(response, user)
+    const user = await userDal.updateUser(request.params.id, request.body);
+    user ? sendSuccess(response, user) : sendError(response, 404, "user with that id doesn't exist.")
 };
 
 exports.removeUser = async (request, response)=>{
+    const result = await userDal.removeUser(request.params.id)
 
 };
 
 //helper functions
-function sendError(response, error, custom_err) {
-    response.status(500).json({
+function sendError(response, status, error) {
+    response.status(status).json({
         type : "error",
-        status: 500,
-        error  : [
+        status: status,
+        errors  : [
             {
-                msg : custom_err || error.message
+                msg : error
             }
         ]
     })
 }
 function sendSuccess(response, data) {
+    if(!Array.isArray(data)) data = [data];
     response.status(200).json({
       type: "success",
       status: 200,
