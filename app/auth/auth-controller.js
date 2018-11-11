@@ -74,7 +74,7 @@ exports.tokenValidator = async (request, response, next)=>{
     }
     try{
         const payload    = await jwt.verify(token.split(' ')[1],CONFIG.JWT_SECRET);
-        request.body._id = payload._id;
+        request._id = payload._id;
         next();
     }
     catch(error) {
