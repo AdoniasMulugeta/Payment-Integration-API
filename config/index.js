@@ -28,7 +28,7 @@ const NODE_ENV = process.env.NODE_ENV;
 
 if(NODE_ENV === 'test'){
     DB_URL += "-test",
-    SERVER_PORT = 3001
+    SERVER_PORT = 3000
 }
 else if(NODE_ENV === 'development'){
     DB_URL += "-dev"

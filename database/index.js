@@ -11,7 +11,7 @@ exports.connect = () => {
     console.log("------------",CONFIG.DB_URL,"-------------");
 
     mongoose.plugin(require('mongoose-hidden')({
-        defaultHidden: {'_id': false, password: true, pin: true, '__v': true}
+        defaultHidden: {'_id': false, password: true, '__v': true}
     }));
     //get a handle of the mongoose connection object
     const connection = mongoose.connection;

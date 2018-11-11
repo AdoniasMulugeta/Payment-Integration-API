@@ -79,6 +79,7 @@ describe("User Login Test", ()=>{
             expect(body.data).to.have.property('_id');
             expect(body.data).to.have.property('email').to.be.equal(email);
             expect(body.data).to.have.property('role').to.be.equal(role);
+            console.log(body)
             expect(body.data).to.have.property('token');
             expect(body).to.have.property('status').equal(200);
         });
