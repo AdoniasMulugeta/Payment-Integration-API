@@ -68,23 +68,22 @@ describe("User-Controller Tests",()=>{
     });
 
 
-
-    it('Should update email with the new information provided', async ()=>{
-        await userTestConfig.signUp({name, password, email, role});
-        let response = await userTestConfig.logIn({password, email});
-        const id = response.body.data._id;
-        const token = response.body.data.token;
-        response = await userTestConfig.updateUser(token ,id, {email: emailNew});
-
-        body = response.body;
-        expect(response.status).to.equal(200);
-        expect(body.status).to.equal(200);
-        expect(body.data).to.be.a('array');
-        expect(body.type).to.equal('success');
-        expect(body.data).to.have.lengthOf(1);
-        expect(body.data[0]._id).to.equal(id);
-        expect(body.data[0].email).to.equal(emailNew);
-    });
+    // it('Should update email with the new information provided', async ()=>{
+    //     await userTestConfig.signUp({name, password, email, role});
+    //     let response = await userTestConfig.logIn({password, email});
+    //     const id = response.body.data._id;
+    //     const token = response.body.data.token;
+    //     response = await userTestConfig.updateUser(token ,id, {email: emailNew});
+    //
+    //     body = response.body;
+    //     expect(response.status).to.equal(200);
+    //     expect(body.status).to.equal(200);
+    //     expect(body.data).to.be.a('array');
+    //     expect(body.type).to.equal('success');
+    //     expect(body.data).to.have.lengthOf(1);
+    //     expect(body.data[0]._id).to.equal(id);
+    //     expect(body.data[0].email).to.equal(emailNew);
+    // });
     afterEach(() => {
         return userTestConfig.deleteAll();
     });
