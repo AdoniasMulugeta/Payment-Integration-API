@@ -1,0 +1,97 @@
+//importing third-party modules
+const bcrypt = require('bcryptjs');
+const jwt    = require('jsonwebtoken');
+
+//importing custom modules
+const CONFIG = require('../../config');
+const userDal = require('../user/user-dal');
+
+exports.logIn  = async (request, response) => {
+    const data = request.body;
+    const user = await userDal.getUser({email : data.email});
+    if(!user) {
+        sendError(response);
+        return;
+    }
+    var passwordsMatch = await bcrypt.compare(data.password, user.password);
+
+    if(!passwordsMatch){
+        sendError(response);
+        return
+    }
+
+    const token = jwt.sign({_id: user._id}, CONFIG.JWT_SECRET,{expiresIn: 60*60 });//expires in 1 hour
+
+    response.status(200).json({
+        status : 200,
+        type : "Success",
+        data : {
+            _id:   user._id,
+            name:  user.name,
+            email: user.email,
+            role:  user.role,
+            token: token,
+            created_at: user.created_at,
+            updated_at: user.updated_at
+        }
+    });
+};
+exports.signUp = async (request, response) => {
+    let data      = request.body;
+    data.password = await bcrypt.hash(data.password, CONFIG.SALT_ROUNDS);
+    data.role     = data.role || "USER";
+    const user    = await userDal.createUser(data);
+    response.status(201).json({
+        status: 201,
+        type: "success",
+        data: {
+            _id: user._id,
+            name: user.name,
+            email: user.email,
+            role: user.role,
+            created_at: user.created_at,
+            updated_at: user.updated_at,
+        }
+    });
+};
+exports.validateToken = async (request, response, next)=>{
+    const token = request.headers['authorization'];
+    if(!token){
+        response.status(401).json({
+            status: "error",
+            status_code : 401,
+            error:{
+                err_code : "TOKEN_MISSING",
+                message: "No authentication token found in header"
+            }
+        });
+        return;
+    }
+    try{
+        const payload    = await jwt.verify(token.split(' ')[1],CONFIG.JWT_SECRET);
+        request.body.uid = payload._id;
+        next();
+    }
+    catch(error) {
+        response.json({
+            status : 401,
+            type: "Error",
+            error:{
+                message: error.message,
+                err_code : "INVALID_TOKEN"
+            }
+        });
+    }
+};
+function sendError(response) {
+    response.status(401).json({
+        status: 401,
+        type: "error",
+        errors: [
+            {
+                message: "Authentication Failed",
+                error_code: "AUTH_FAILED"
+            }
+        ]
+    });
+}
