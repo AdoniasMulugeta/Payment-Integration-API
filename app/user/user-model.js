@@ -2,15 +2,14 @@
 const mongoose = require("mongoose");
 
 // importing custom models
-const CONFIG   = require("../config");
+const CONFIG   = require("../../config");
 
 // define the schema for the model
 const userModel = new mongoose.Schema({
+    name       : { type : String, required: true},
     email      : { type : String, required: true},
     password   : { type : String, required: true},
-    role       : { type : String, required: true,
-                   enum : CONFIG.ROLES,
-                   default: CONFIG.DEFAULT_ROLE},
+    role       : { type : String, enum : CONFIG.ROLES, default: CONFIG.DEFAULT_ROLE},
     enabled    : { type : Boolean, default: true},
     created_at : { type : Date },
     updated_at : { type : Date }
@@ -34,4 +33,4 @@ userModel.pre('findOneAndUpdate', function(next){
 });
 
 //expose the model to the outside scripts
-exports = mongoose.model("user", userModel);
+module.exports = mongoose.model("user", userModel);
