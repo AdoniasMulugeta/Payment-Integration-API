@@ -6,11 +6,10 @@ const CONFIG   = require("../../config");
 
 // define the schema for the model
 const userModel = new mongoose.Schema({
+    name       : { type : String, required: true},
     email      : { type : String, required: true},
     password   : { type : String, required: true},
-    role       : { type : String, required: true,
-                   enum : CONFIG.ROLES,
-                   default: CONFIG.DEFAULT_ROLE},
+    role       : { type : String, enum : CONFIG.ROLES, default: CONFIG.DEFAULT_ROLE},
     enabled    : { type : Boolean, default: true},
     created_at : { type : Date },
     updated_at : { type : Date }

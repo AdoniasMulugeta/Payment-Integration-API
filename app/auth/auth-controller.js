@@ -6,9 +6,10 @@ const jwt    = require('jsonwebtoken');
 const CONFIG = require('../../config');
 const userDal = require('../user/user-dal');
 
+//middleware to handle user Login
 exports.logIn  = async (request, response) => {
     const data = request.body;
-    const user = await userDal.getUser({email : data.email});
+    let user = await userDal.getUser({email : data.email});
     if(!user) {
         sendError(response);
         return;
@@ -36,6 +37,8 @@ exports.logIn  = async (request, response) => {
         }
     });
 };
+
+//middleware to handle user sign-up
 exports.signUp = async (request, response) => {
     let data      = request.body;
     data.password = await bcrypt.hash(data.password, CONFIG.SALT_ROUNDS);
@@ -54,42 +57,50 @@ exports.signUp = async (request, response) => {
         }
     });
 };
-exports.validateToken = async (request, response, next)=>{
+
+//middleware to validate incoming token and attach the user id on the request object
+exports.tokenValidator = async (request, response, next)=>{
     const token = request.headers['authorization'];
     if(!token){
-        response.status(401).json({
-            status: "error",
-            status_code : 401,
-            error:{
-                err_code : "TOKEN_MISSING",
-                message: "No authentication token found in header"
-            }
+        response.status(400).json({
+            status : 400,
+            type: "error",
+            errors:[
+                {
+                    err_code : "TOKEN_MISSING",
+                    msg: "No authentication token found in header"
+                }
+            ]
         });
         return;
     }
     try{
         const payload    = await jwt.verify(token.split(' ')[1],CONFIG.JWT_SECRET);
-        request.body.uid = payload._id;
+        request._id = payload._id;
         next();
     }
     catch(error) {
         response.json({
-            status : 401,
+            status : 400,
             type: "Error",
-            error:{
-                message: error.message,
-                err_code : "INVALID_TOKEN"
-            }
+            errors:[
+                {
+                    msg: error.message,
+                    err_code : "INVALID_TOKEN"
+                }
+            ]
         });
     }
 };
+
+//helper functions
 function sendError(response) {
-    response.status(401).json({
-        status: 401,
+    response.status(400).json({
+        status: 400,
         type: "error",
         errors: [
             {
-                message: "Authentication Failed",
+                msg: "Authentication Failed",
                 error_code: "AUTH_FAILED"
             }
         ]

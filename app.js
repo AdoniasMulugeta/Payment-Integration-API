@@ -1,4 +1,5 @@
 //import third-party modules
+require('dotenv').config()
 const express          = require("express");
 const bodyParser       = require("body-parser");
 const expressValidator = require('express-validator');
@@ -9,7 +10,6 @@ const config     = require('./config');
 const router     = require('./router');
 const server     = require('./server');
 
-console.log(process.env.NODE_ENV)
 //get handle of express app
 const app = express();
 
