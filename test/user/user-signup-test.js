@@ -6,8 +6,8 @@ const data = require('../../config/test-data');
 
 describe('User Sign-Up Test', () => {
     const {name, email, invalidEmail, password, role} = data;
-    let body;
-    // beforeEach(() => userTestConfig.deleteAll());
+
+    beforeEach(() => userTestConfig.deleteAll());
 
     it('Should fail signup if name is missing', () => {
         return userTestConfig.signUp({email, password, role}).then(res => {

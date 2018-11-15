@@ -30,9 +30,6 @@ if(NODE_ENV === 'test'){
     DB_URL += "-test",
     SERVER_PORT = 3001
 }
-else if(NODE_ENV === 'development'){
-    DB_URL += "-dev"
-}
 
 module.exports = {
     DB_URL, DEFAULT_ROLE, DEFAULT_SORT, MAX_PAGE_SIZE, JWT_SECRET, ROLES, SALT_ROUNDS, SERVER_PORT, NODE_ENV
