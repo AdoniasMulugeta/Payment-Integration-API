@@ -57,7 +57,7 @@ router.post ('/:account/transactions/:id/refund',
 router.put ('/:account',
     accessControl.role.ADMIN_OR_USER,
     accountValidator.checkAccount,
-    acountController.updateAccount
+    accountController.updateAccount
 );
 
 router.delete ('/:account',
