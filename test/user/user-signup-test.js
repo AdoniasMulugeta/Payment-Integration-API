@@ -43,19 +43,17 @@ describe('User Sign-Up Test', () => {
             expect(body).to.have.property('status').equal(400);
         });
     });
-    it('Should fail signup if email already exists', () => {
-        return userTestConfig.signUp({name, email ,password, role})
-            .then(() => userTestConfig.signUp({name, email ,password, role}))
-            .then(res => {
-            const body = res.body;
-            expect(res.status).to.equal(400);
-            expect(body).to.be.a('object');
-            expect(body).to.have.property('type').equal('error');
-            expect(body.errors).to.be.an('array');
-            expect(body.errors).to.be.a.lengthOf(1);
-            expect(body.errors.some(err => err.msg.includes('email'))).to.be.true;
-            expect(body).to.have.property('status').equal(400);
-        });
+    it('Should fail signup if email already exists', async () => {
+        await userTestConfig.signUp({name, email ,password, role});
+        const response = await userTestConfig.signUp({name, email ,password, role});
+        const body = response.body;
+        expect(response.status).to.equal(400);
+        expect(body).to.be.a('object');
+        expect(body).to.have.property('type').equal('error');
+        expect(body.errors).to.be.an('array');
+        expect(body.errors).to.be.a.lengthOf(1);
+        expect(body.errors.some(err => err.msg.includes('email'))).to.be.true;
+        expect(body).to.have.property('status').equal(400);
     });
     it('Should fail signup if password is missing', () => {
         return userTestConfig.signUp({name, email, role}).then(res => {

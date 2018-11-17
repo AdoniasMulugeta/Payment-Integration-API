@@ -18,7 +18,7 @@ exports.signUp = async ({name, email, password, role}) => {
     })
 };
 exports.logIn = async ({email, password})=>{
-    return await request(app).post('/users/login').send({
+    return await request(app).post('/users/signin').send({
         email: email,
         password : password
     })

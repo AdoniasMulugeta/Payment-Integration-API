@@ -70,7 +70,7 @@ describe("User-Controller Tests",()=>{
 
     // it('Should update email with the new information provided', async ()=>{
     //     await userTestConfig.signUp({name, password, email, role});
-    //     let response = await userTestConfig.logIn({password, email});
+    //     let response = await userTestConfig.signIn({password, email});
     //     const id = response.body.data._id;
     //     const token = response.body.data.token;
     //     response = await userTestConfig.updateUser(token ,id, {email: emailNew});
