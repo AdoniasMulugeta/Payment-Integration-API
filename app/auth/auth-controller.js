@@ -7,7 +7,7 @@ const CONFIG = require('../../config');
 const userDal = require('../user/user-dal');
 
 //middleware to handle user Login
-exports.logIn  = async (request, response) => {
+exports.signIn  = async (request, response) => {
     const data = request.body;
     let user = await userDal.getUser({email : data.email});
     if(!user) {

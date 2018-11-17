@@ -10,7 +10,7 @@ exports.signUp = (request, response, next) => {
         .isEmail().withMessage("email not valid")
         .custom(async email => {
             const user = await userDal.getUsers({email: email});
-            if (user.length > 0) return false;
+            if (user.length > 0) throw new Error('Email already registered');
             else return user;
         })
         .withMessage("An account already exists with this email");
@@ -20,20 +20,20 @@ exports.signUp = (request, response, next) => {
 
     request.check('role')
         .exists().withMessage("user role is required");
-    checkErrors();
+    checkErrors(request, response, next);
 };
 
-exports.logIn = (request, response, next)=> {
+exports.signIn = (request, response, next)=> {
     request.check('email')
         .exists().withMessage("email is required")
         .isEmail().withMessage("invalid credentials");
 
         request.check('password')
             .exists().withMessage("password is required");
-    checkErrors();
+    checkErrors(request, response, next);
 };
 
-async function checkErrors (request) {
+async function checkErrors (request, response, next) {
     const errors = await request.getValidationResult();
     if(!errors.isEmpty()){
         response.status(400).json({
