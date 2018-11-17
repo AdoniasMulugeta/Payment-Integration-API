@@ -3,10 +3,10 @@ const mongoose = require("mongoose");
 
 // define the schema for the model
 const walletModel = new mongoose.Schema({
-    user_id          : { type : mongoose.ObjectId, ref : "user", required: true},
-    accounts         : [{type : mongoose.ObjectId, ref : "account"}],
-    created_at       : { type : Date },
-    updated_at       : { type : Date }
+    user_id     : { type : mongoose.ObjectId, ref : "user", required: true},
+    accounts    : [{type : mongoose.ObjectId, ref : "account"}],
+    created_at  : { type : Date },
+    updated_at  : { type : Date }
 });
 
 // database hooks

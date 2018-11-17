@@ -8,7 +8,7 @@ const authValidator  = require("../auth/auth-validator");
 
 //define http get request route
 
-router.get   ('/',        userController.getUsers);
+router.get   ('/',       userController.getUsers);
 router.get   ('/:id',    userController.getUser);
 router.post  ('/signup', authValidator.signUp, authValidator.errorHandler, authController.signUp);
 router.post  ('/login',  authValidator.logIn, authValidator.errorHandler, authController.logIn);

@@ -4,7 +4,6 @@ const { check, validationResult } = require('express-validator/check');
 //importing custom module
 const CONFIG  = require('../../config');
 const userDal = require('../user/user-dal');
-//todo: change the validations from an array to a middleware
 
 exports.update = async (request, response, next) => {
     if(request.body.name !== undefined) {

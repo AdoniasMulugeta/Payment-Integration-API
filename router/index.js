@@ -1,9 +1,10 @@
 //importing custom modules
-const userRouter = require("../app/user/user-router");
-const walletRouter =
+const userRouter     = require("../app/user/user-router");
+const accountRouter  = require('../app/account/account-router');
+const authController = require('../app/auth/auth-controller');
+
 
 module.exports = app => {
-    //validate token of any requests coming to this route
     app.use('/users', userRouter);
-    app.use('wallet', wallerRouter);
+    app.use('/accounts', authController.tokenValidator, accountRouter);
 };

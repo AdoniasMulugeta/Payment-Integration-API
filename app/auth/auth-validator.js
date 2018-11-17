@@ -1,41 +1,40 @@
 //importing custom module
-const { check, validationResult } = require('express-validator/check');
-
-//importing custom module
 const userDal = require('../user/user-dal');
 
-exports.signUp = [
-    check('name')
-        .exists().withMessage('name is required'),
+exports.signUp = (request, response, next) => {
+    request.check('name')
+        .exists().withMessage('name is required');
 
-    check('email')
+    request.check('email')
         .exists().withMessage("email is required")
         .isEmail().withMessage("email not valid")
         .custom(async email => {
             const user = await userDal.getUsers({email: email});
-            if(user.length > 0) return false;
+            if (user.length > 0) return false;
             else return user;
         })
-        .withMessage("An account already exists with this email"),
+        .withMessage("An account already exists with this email");
 
-    check('password')
-        .exists().withMessage("password is required"),
+    request.check('password')
+        .exists().withMessage("password is required");
 
-    check('role')
-        .exists().withMessage("user role is required")
-];
+    request.check('role')
+        .exists().withMessage("user role is required");
+    checkErrors();
+};
 
-exports.logIn = [
-    check('email')
+exports.logIn = (request, response, next)=> {
+    request.check('email')
         .exists().withMessage("email is required")
-        .isEmail().withMessage("invalid credentials"),
+        .isEmail().withMessage("invalid credentials");
 
-    check('password')
-        .exists().withMessage("password is required")
-];
+        request.check('password')
+            .exists().withMessage("password is required");
+    checkErrors();
+};
 
-exports.errorHandler = (request, response, next)=>{
-    const errors = validationResult(request);
+async function checkErrors (request) {
+    const errors = await request.getValidationResult();
     if(!errors.isEmpty()){
         response.status(400).json({
             status : 400,
@@ -46,4 +45,4 @@ exports.errorHandler = (request, response, next)=>{
     else{
         next();
     }
-};
+}

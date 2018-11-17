@@ -3,7 +3,7 @@ const userTestConfig = require('./user-test-config');
 const data = require('../../config/test-data');
 
 describe("User Login Test", ()=>{
-    const {name, fakeName, email, invalidEmail, fakeEmail, password, fakePassword, role} = data;
+    const {name, email, fakeEmail, password, fakePassword, role} = data;
     beforeEach(() => {
         return userTestConfig.deleteAll();
     });
@@ -70,17 +70,18 @@ describe("User Login Test", ()=>{
             expect(body).to.have.property('status').equal(400);
         });
         it('Should login if username and password are correct', async () => {
-            response = await userTestConfig.logIn({email, password})
-            const body = response.body;
-            expect(response.status).to.equal(200);
-            expect(body).to.be.a('object');
-            expect(body).to.have.property('type').equal('Success');
-            expect(body.data).to.be.an('object');
-            expect(body.data).to.have.property('_id');
-            expect(body.data).to.have.property('email').to.be.equal(email);
-            expect(body.data).to.have.property('role').to.be.equal(role);
-            expect(body.data).to.have.property('token');
-            expect(body).to.have.property('status').equal(200);
-        });
+        response = await userTestConfig.logIn({email, password})
+        const body = response.body;
+        expect(response.status).to.equal(200);
+        expect(body).to.be.a('object');
+        expect(body).to.have.property('type').equal('Success');
+        expect(body.data).to.be.an('object');
+        expect(body.data).to.have.property('_id');
+        expect(body.data).to.have.property('email').to.be.equal(email);
+        expect(body.data).to.have.property('role').to.be.equal(role);
+        expect(body.data).to.have.property('token');
+        expect(body).to.have.property('status').equal(200);
+    });
     })
+    //todo have a test to check token is valid and has user id as a payload
 })

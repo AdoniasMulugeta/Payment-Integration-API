@@ -1,4 +1,6 @@
-const userDal = require("../user/user-dal");
+//import custom modules
+const CONFIG = require("../../config");
+const userDal = require("./user-dal");
 
 exports.getUser = async (request, response)=>{
     const user = await userDal.getUserById(request.params.id);
@@ -24,6 +26,12 @@ exports.removeUser = async (request, response)=>{
     result ? sendSuccess(response, result) : sendError(response, 500, "Failed to remove user");
 
 };
+
+exports.getRole = async id => {
+  const user = await userDal.getUser(id);
+  return user.role || CONFIG.DEFAULT_ROLE;
+};
+
 
 //helper functions
 function sendError(response, status, error) {

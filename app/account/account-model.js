@@ -14,4 +14,4 @@ accountModel.pre('findOneAndUpdate', function(next){
 });
 
 //expose the model to the outside scripts
-exports = mongoose.model("account", accountModel);
+module.exports = mongoose.model("account", accountModel);

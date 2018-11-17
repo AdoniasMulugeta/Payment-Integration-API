@@ -31,9 +31,5 @@ exports.getUsers = async () => {
   return await request(app).get('/users');
 };
 exports.updateUser = async (token, id, data)=>{
-    return await request({
-        method : 'PUT',
-        uri : `/users/${id}`,
-        body : data
-    });
+    return await request(app).put('/users/'+id).set('Authorization', "bearer "+token).send(data);
 };
