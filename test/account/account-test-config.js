@@ -5,12 +5,14 @@ const data = require('../../config/test-data');
 const userTestConfig = require('../user/user-test-config');
 let token = '';
 
-(async function setupUser(){
+async function setupUser(){
     const {name, email, password, role} = data;
     await userTestConfig.signUp({name, email, password, role});
-    const user  = await userTestConfig.logIn(email, password);
-    token = user.data.token;
-})();
+    const response  = await userTestConfig.signIn(email, password);
+    token = response.body.data.token;
+    id = response.body._id;
+    return {token, id}
+};
 
 exports.deleteAll = async () => {
     await accountModel.deleteMany({});

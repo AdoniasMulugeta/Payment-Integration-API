@@ -2,15 +2,15 @@ const expect = require('chai').expect;
 const userTestConfig = require('./user-test-config');
 const data = require('../../config/test-data');
 
-describe("User Login Test", ()=>{
+describe("User Sign-in Test", ()=>{
     const {name, email, fakeEmail, password, fakePassword, role} = data;
     beforeEach(() => {
         return userTestConfig.deleteAll();
     });
-    it("Should Fail to Login if email is not provided",async ()=>{
-        response = await userTestConfig.logIn({password});
+    it("Should Fail to Sign-In if email is not provided",async ()=>{
+        response = await userTestConfig.signIn({password});
         body = response.body;
-        expect(response.status).to.equal(400)
+        expect(response.status).to.equal(400);
         expect(body).to.be.a('object');
         expect(body).to.have.property('type').equal('error');
         expect(body.errors).to.be.an('array');
@@ -18,10 +18,10 @@ describe("User Login Test", ()=>{
         expect(body.errors[0].msg).contains('email');
         expect(body).to.have.property('status').equal(400);
     });
-    it("Should Fail to Login if password is not provided",async ()=>{
-        response = await userTestConfig.logIn({email});
+    it("Should Fail to Sign-In if password is not provided",async ()=>{
+        response = await userTestConfig.signIn({email});
         body = response.body;
-        expect(response.status).to.equal(400)
+        expect(response.status).to.equal(400);
         expect(body).to.be.a('object');
         expect(body).to.have.property('type').equal('error');
         expect(body.errors).to.be.an('array');
@@ -29,10 +29,10 @@ describe("User Login Test", ()=>{
         expect(body.errors.some(err => err.msg.includes('password'))).to.be.true;
         expect(body).to.have.property('status').equal(400);
     });
-    it("Should Fail to Login if both email and  password are not provided",async ()=>{
-        response = await userTestConfig.logIn({});
+    it("Should Fail to Sign-In if both email and  password are not provided",async ()=>{
+        response = await userTestConfig.signIn({});
         body = response.body;
-        expect(response.status).to.equal(400)
+        expect(response.status).to.equal(400);
         expect(body).to.be.a('object');
         expect(body).to.have.property('type').equal('error');
         expect(body.errors).to.be.an('array');
@@ -41,14 +41,14 @@ describe("User Login Test", ()=>{
         expect(body.errors.some(err => err.msg.includes('email'))).to.be.true;
         expect(body).to.have.property('status').equal(400);
     });
-    describe('User Login with Wrong Credentials Test',()=>{
+    describe('User Sign-In with Wrong Credentials Test',()=>{
         beforeEach(async () => {
             await userTestConfig.deleteAll();
             response = await userTestConfig.signUp({name, email, password, role});
             expect(response.status).to.equal(201);
         });
-        it('should fail to login if email does not exist', async () => {
-            response = await userTestConfig.logIn({email : fakeEmail, password})
+        it('should fail to Sign-In if email does not exist', async () => {
+            response = await userTestConfig.signIn({email : fakeEmail, password})
             const body = response.body;
             expect(response.status).to.equal(400);
             expect(body).to.be.a('object');
@@ -58,8 +58,8 @@ describe("User Login Test", ()=>{
             expect(body.errors.some(err => err.msg.includes('Authentication'))).to.be.true;
             expect(body).to.have.property('status').equal(400);
         });
-        it('should fail to login if password is incorrect', async () => {
-            response = await userTestConfig.logIn({email, password: fakePassword})
+        it('should fail to Sign-In if password is incorrect', async () => {
+            response = await userTestConfig.signIn({email, password: fakePassword})
             const body = response.body;
             expect(response.status).to.equal(400);
             expect(body).to.be.a('object');
@@ -69,8 +69,8 @@ describe("User Login Test", ()=>{
             expect(body.errors.some(err => err.msg.includes('Authentication'))).to.be.true;
             expect(body).to.have.property('status').equal(400);
         });
-        it('Should login if username and password are correct', async () => {
-        response = await userTestConfig.logIn({email, password})
+        it('Should Sign-In if username and password are correct', async () => {
+        response = await userTestConfig.signIn({email, password})
         const body = response.body;
         expect(response.status).to.equal(200);
         expect(body).to.be.a('object');

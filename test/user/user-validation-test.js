@@ -7,16 +7,17 @@ const data = require('../../config/test-data');
 
 describe("User-Validation Tests",async ()=>{
     const {name, email, invalidEmail, password, role} = data;
-
-    beforeEach(async () => {
-        return userTestConfig.deleteAll();
-        await userTestConfig.signUp({name, email, password, role});
+    var token, id = "";
+    beforeEach(async ()=>{
+        userTestConfig.deleteAll();
+        userInfo = await userTestConfig.setupUser();
+        token = userInfo.token;
+        id = userInfo.id;
     });
 
     it('Should fail to update user if name is empty', async () => {
-        let response  = await userTestConfig.logIn({email, password});
-        var user = response.body.data;
-        response = await userTestConfig.updateUser(user.token, user._id, {name: ""});
+
+        response = await userTestConfig.updateUser(id, {name: ""}, token);
         const body = response.body;
         expect(response.status).to.equal(400);
         expect(body.status).to.equal(400);
@@ -27,11 +28,9 @@ describe("User-Validation Tests",async ()=>{
     });
 
     it('Should fail to update name if name is > 50 characters', async () => {
-        let response  = await userTestConfig.logIn({email, password});
-        const user =response.body.data;
         let longStr = '';
         for(i=0;i<55;i++){longStr+='a'}
-        response = await userTestConfig.updateUser(user.token, user._id, {name: longStr});
+        response = await userTestConfig.updateUser(id, {name: longStr}, token);
         const body = response.body;
         expect(response.status).to.equal(400);
         expect(body.status).to.equal(400);
@@ -43,9 +42,7 @@ describe("User-Validation Tests",async ()=>{
     });
 
     it('Should fail to update user if email is empty', async () => {
-        let response  = await userTestConfig.logIn({email, password});
-        const user =response.body.data;
-        response = await userTestConfig.updateUser(user.token, user._id, {email: ""});
+        response = await userTestConfig.updateUser(id, {email: ""}, token);
         const body = response.body;
         expect(response.status).to.equal(400);
         expect(body.status).to.equal(400);
@@ -56,9 +53,9 @@ describe("User-Validation Tests",async ()=>{
     });
 
     it('Should fail to update user if email is not valid', async () => {
-        let response  = await userTestConfig.logIn({email, password});
+        let response  = await userTestConfig.signIn({email, password});
         const user =response.body.data;
-        response = await userTestConfig.updateUser(user.token, user._id, {email: invalidEmail});
+        response = await userTestConfig.updateUser(id, {email: invalidEmail}, token);
         const body = response.body;
         expect(response.status).to.equal(400);
         expect(body.status).to.equal(400);
