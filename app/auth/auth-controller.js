@@ -5,19 +5,32 @@ const jwt    = require('jsonwebtoken');
 //importing custom modules
 const CONFIG = require('../../config');
 const userDal = require('../user/user-dal');
+const responseFormatter = require('../../lib/response-formatter');
 
 //middleware to handle user Login
 exports.signIn  = async (request, response) => {
     const data = request.body;
     let user = await userDal.getUserWithPassword({email : data.email});
     if(!user) {
-        sendError(response);
+        responseFormatter.error(response, {
+            status:400,
+            location: "internal",
+            msg:"can't find user with specified email",
+            param:"email",
+            value:data.email
+        });
         return;
     }
     var passwordsMatch = await bcrypt.compare(data.password, user.password);
 
     if(!passwordsMatch){
-        sendError(response);
+        responseFormatter.error(response, {
+            status:400,
+            location: null,
+            msg:"authentication failed",
+            param:null,
+            value:null
+        });
         return
     }
 
@@ -42,7 +55,6 @@ exports.signIn  = async (request, response) => {
 exports.signUp = async (request, response) => {
     let data      = request.body;
     data.password = await bcrypt.hash(data.password, CONFIG.SALT_ROUNDS);
-    data.role     = data.role || "USER";
     const user    = await userDal.createUser(data);
     response.status(201).json({
         status: 201,
@@ -62,15 +74,12 @@ exports.signUp = async (request, response) => {
 exports.tokenValidator = async (request, response, next)=>{
     const token = request.headers['authorization'];
     if(!token){
-        response.status(400).json({
-            status : 400,
-            type: "error",
-            errors:[
-                {
-                    err_code : "TOKEN_MISSING",
-                    msg: "No authentication token found in header"
-                }
-            ]
+        responseFormatter.error(response, {
+            status:400,
+            location: "header",
+            msg:"No authentication token found in header",
+            param:"authorization",
+            value:null
         });
         return;
     }
@@ -82,29 +91,12 @@ exports.tokenValidator = async (request, response, next)=>{
         next();
     }
     catch(error) {
-        response.json({
-            status : 400,
-            type: "Error",
-            errors:[
-                {
-                    msg: error.message,
-                    err_code : "INVALID_TOKEN"
-                }
-            ]
+        responseFormatter.error(response, {
+            status:400,
+            location: "header",
+            msg:"No authentication token found in header",
+            param:"authorization",
+            value:token
         });
     }
 };
-
-//helper functions
-function sendError(response) {
-    response.status(400).json({
-        status: 400,
-        type: "error",
-        errors: [
-            {
-                msg: "Authentication Failed",
-                error_code: "AUTH_FAILED"
-            }
-        ]
-    });
-}
