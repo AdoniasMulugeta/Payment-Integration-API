@@ -1,7 +1,7 @@
 // importing custom modules
 const userModel = require("./user-model");
 
-exports.getUserById  = async id    => await userModel.findById(id);
+exports.getUserById  = async id    => await userModel.findById(id,"-password");
 
 exports.getUser      = async query => await userModel.findOne(query);
 
@@ -12,5 +12,7 @@ exports.createUser   = async data  => await userModel.create(data);
 exports.updateUser   = async (id,data)  => await userModel.findOneAndUpdate({_id: id},{$set:data},{new: true});
 
 exports.removeUser   = async id  => await userModel.findOneAndDelete({_id: id});
+
+exports.getUserWithPassword  = async query => await userModel.findOne(query).select('+password');
 
 

@@ -17,7 +17,7 @@ exports.update = async (request, response, next) => {
             .isEmail().withMessage("email not valid")
             .custom(async email => {
                 const user = await userDal.getUsers({email: email});
-                if (user.length > 0) return false;
+                if (user.length > 0) throw new Error();
                 else return user;
             })
             .withMessage("An account already exists with this email");

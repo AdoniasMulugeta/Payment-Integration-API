@@ -5,14 +5,18 @@ const userController = require("./user-controller");
 const userValidator  = require("./user-validation");
 const authController = require("../auth/auth-controller");
 const authValidator  = require("../auth/auth-validator");
+const accessControl  = require("../auth/access-control");
 
 //define http get request route
 
 router.get ('/',
+    authController.tokenValidator,
+    accessControl.role.ADMIN,
     userController.getUsers
 );
 
 router.get ('/:id',
+    authController.tokenValidator,
     userController.getUser
 );
 

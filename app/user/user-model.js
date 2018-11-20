@@ -3,12 +3,13 @@ const mongoose = require("mongoose");
 
 // importing custom models
 const CONFIG   = require("../../config");
+const STATIC   = require("../../lib/STATIC")
 
 // define the schema for the model
 const userModel = new mongoose.Schema({
     email      : { type : String, required: true},
     password   : { type : String, required: true, select: false},
-    role       : { type : String, enum : CONFIG.ROLES, default: CONFIG.DEFAULT_ROLE},
+    role       : { type : String, enum : CONFIG.ROLES, default: STATIC.ROLE.USER},
     Client_ID  : { type : mongoose.ObjectId , ref : "client"},
     enabled    : { type : Boolean, default: true},
     created_at : { type : Date },

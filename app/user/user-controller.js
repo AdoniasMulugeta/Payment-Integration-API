@@ -1,46 +1,68 @@
 //import custom modules
 const CONFIG = require("../../config");
 const userDal = require("./user-dal");
+const bcrypt = require('bcryptjs');
+
+exports.getRole = async id => {
+    const user = await userDal.getUser(id);
+    return user.role || CONFIG.DEFAULT_ROLE;
+};
 
 exports.getUser = async (request, response)=>{
-    const user = await userDal.getUserById(request.params.id);
-    user ? sendSuccess(response, user) : sendError(response, 404, "user with that id doesn't exist.")
+    try{
+        const user = await userDal.getUserById(request.params.id);
+        sendSuccess(response, user)
+    }
+    catch(error){
+        sendError(response, error)
+    }
 };
 
 exports.getUsers = async (request, response)=>{
-    const users = await userDal.getUsers(request.body);
-    sendSuccess(response, users)
-};
-
-exports.searchUsers = async  (request, response)=>{
-
+    try{
+        const users = await userDal.getUsers(request.body);
+        sendSuccess(response, users)
+    }
+    catch(error){
+        sendError(response, error)
+    }
 };
 
 exports.updateUser = async (request, response)=>{
-    const user = await userDal.updateUser(request.params.id, request.body);
-    user ? sendSuccess(response, user) : sendError(response, 404, "user with that id doesn't exist.")
+    try{
+        if(request.body.password){
+            request.body.password = await bcrypt.hash(request.body.password, CONFIG.SALT_ROUNDS);
+        }
+        const user = await userDal.updateUser(request.params.id, request.body);
+        sendSuccess(response, user)
+    }
+    catch(error){
+        sendError(response, error)
+    }
 };
 
 exports.removeUser = async (request, response)=>{
-    const result = await userDal.removeUser(request.params.id)
-    result ? sendSuccess(response, result) : sendError(response, 500, "Failed to remove user");
-
-};
-
-exports.getRole = async id => {
-  const user = await userDal.getUser(id);
-  return user.role || CONFIG.DEFAULT_ROLE;
+    try{
+        const result = await userDal.removeUser(request.params.id);
+        sendSuccess(response, result)
+    }
+    catch(error){
+        sendError(response, error)
+    }
 };
 
 
 //helper functions
-function sendError(response, status, error) {
-    response.status(status).json({
+function sendError(response, error) {
+    response.status(500).json({
         type : "error",
-        status: status,
+        status: 500,
         errors  : [
             {
-                msg : error
+                type : "internal server error",
+                msg : "failed to execute operation: "+error.message,
+                action : action,
+
             }
         ]
     })
