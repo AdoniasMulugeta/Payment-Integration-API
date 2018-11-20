@@ -1,10 +1,10 @@
 const mongoose = require("mongoose");
 
 const accountModel = new mongoose.Schema({
-    FID        : { type : mongoose.ObjectId , ref: "FI" },
-    client_id  : { type : mongoose.ObjectId , ref: "client" },
-    balance    : { type : Number},
-    enabled    : { type : Boolean , default : true },
+    FID        : { type : mongoose.ObjectId , ref: "FI", required: true},
+    client_id  : { type : mongoose.ObjectId , ref: "client" , required: true},
+    balance    : { type : Number, required: true},
+    enabled    : { type : Boolean , default : true, required: true },
     created_at : { type : Date , default: Date.now()},
     updated_at : { type : Date , default: Date.now()}
 });
@@ -17,3 +17,4 @@ accountModel.pre('findOneAndUpdate', function(next){
 
 //expose the model to the outside scripts
 module.exports = mongoose.model("account", accountModel);
+exports.schema = accountModel;
