@@ -9,7 +9,7 @@ const userDal = require('../user/user-dal');
 //middleware to handle user Login
 exports.signIn  = async (request, response) => {
     const data = request.body;
-    let user = await userDal.getUser({email : data.email});
+    let user = await userDal.getUserWithPassword({email : data.email});
     if(!user) {
         sendError(response);
         return;
@@ -21,7 +21,7 @@ exports.signIn  = async (request, response) => {
         return
     }
 
-    const token = jwt.sign({_id: user._id}, CONFIG.JWT_SECRET,{expiresIn: 60*60 });//expires in 1 hour
+    const token = jwt.sign({_id: user._id}, CONFIG.JWT_SECRET,{expiresIn: 120*60*60 });//expires in 1 hour
 
     response.status(200).json({
         status : 200,
@@ -75,8 +75,10 @@ exports.tokenValidator = async (request, response, next)=>{
         return;
     }
     try{
-        const payload    = await jwt.verify(token.split(' ')[1],CONFIG.JWT_SECRET);
-        request._id = payload._id;
+        const payload = await jwt.verify(token.split(' ')[1],CONFIG.JWT_SECRET);
+        request._id  = payload._id;
+        const user = await userDal.getUserById(request._id);
+        request.role = user.role;
         next();
     }
     catch(error) {

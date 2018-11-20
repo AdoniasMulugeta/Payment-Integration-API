@@ -2,15 +2,12 @@
 const userDal = require('../user/user-dal');
 
 exports.signUp = (request, response, next) => {
-    request.check('name')
-        .exists().withMessage('name is required');
-
     request.check('email')
         .exists().withMessage("email is required")
         .isEmail().withMessage("email not valid")
         .custom(async email => {
             const user = await userDal.getUsers({email: email});
-            if (user.length > 0) throw new Error('Email already registered');
+            if (user.length > 0) throw new Error();
             else return user;
         })
         .withMessage("An account already exists with this email");
@@ -18,18 +15,17 @@ exports.signUp = (request, response, next) => {
     request.check('password')
         .exists().withMessage("password is required");
 
-    request.check('role')
-        .exists().withMessage("user role is required");
     checkErrors(request, response, next);
 };
 
 exports.signIn = (request, response, next)=> {
     request.check('email')
         .exists().withMessage("email is required")
-        .isEmail().withMessage("invalid credentials");
+        .isEmail().withMessage("invalid email");
 
         request.check('password')
             .exists().withMessage("password is required");
+
     checkErrors(request, response, next);
 };
 
