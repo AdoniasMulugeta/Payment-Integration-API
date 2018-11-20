@@ -11,15 +11,15 @@ const FIModel = new mongoose.Schema({
     api_uri_alt : { type : String , required: true},
     type        : { type : String, enum : CONFIG.FI_TYPES},
     address     : { type : String },
-    enabled     : { type : Boolean, default: true},
-    created_by  : { type : mongoose.ObjectId , ref : "user"},
+    enabled     : { type : Boolean, default: true, required: true},
+    created_by  : { type : mongoose.ObjectId , ref : "FI", required: true},
     created_at  : { type : Date },
     updated_at  : { type : Date }
 });
 
 // database hooks
 // run this before every new record is saved
-userModel.pre('save', function (next) {
+FIModel.pre('save', function (next) {
     let now = (new Date()).toISOString();
     this.created_at = now;
     this.updated_at = now;
@@ -27,7 +27,7 @@ userModel.pre('save', function (next) {
 });
 
 // run this before every record is updated
-userModel.pre('findOneAndUpdate', function(next){
+FIModel.pre('findOneAndUpdate', function(next){
     this.update({},{ $set: {
             updated_at: new Date().toISOString()
         }});

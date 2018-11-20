@@ -19,6 +19,9 @@ const DEFAULT_SORT = "date_updated";
 // user roles in the application
 const ROLES = ["ADMIN", "USER"];
 
+// list of financial institutions
+const FI_TYPE = ["BANK", "VIRTUAL_WALLET"];
+
 // a default role when none is provided
 const DEFAULT_ROLE = "USER";
 

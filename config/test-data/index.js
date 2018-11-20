@@ -9,5 +9,6 @@ module.exports = {
     password: "admin1234",
     fakePassword : "fake-password",
     role: "USER",
+    roleAdmin : "ADMIN",
     fakeRole: "FAKE-ROLE"
 };
