@@ -4,6 +4,7 @@ const jwt    = require('jsonwebtoken');
 
 //importing custom modules
 const CONFIG = require('../../config');
+const STATIC = require('../../lib/STATIC');
 const userDal = require('../user/user-dal');
 const responseFormatter = require('../../lib/response-formatter');
 
@@ -15,7 +16,7 @@ exports.signIn  = async (request, response) => {
         responseFormatter.error(response, {
             status:400,
             location: "internal",
-            msg:"can't find user with specified email",
+            msg:"authentication failed",
             param:"email",
             value:data.email
         });
@@ -85,16 +86,26 @@ exports.tokenValidator = async (request, response, next)=>{
     }
     try{
         const payload = await jwt.verify(token.split(' ')[1],CONFIG.JWT_SECRET);
-        request._id  = payload._id;
+        request._id  = request.params.id || payload._id;
         const user = await userDal.getUserById(request._id);
+        if(!user){
+            responseFormatter.error(response, {
+                status:404,
+                location: "uri",
+                msg  :"user not found",
+                param:"id",
+                value:request.id
+            });
+            return;
+        }
         request.role = user.role;
         next();
     }
     catch(error) {
         responseFormatter.error(response, {
             status:400,
-            location: "header",
-            msg:"No authentication token found in header",
+            location: "internal",
+            msg:error.message,
             param:"authorization",
             value:token
         });
