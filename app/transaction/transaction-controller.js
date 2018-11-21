@@ -37,7 +37,7 @@ function sendError(response, error) {
         errors  : [
             {
                 type : "internal server error",
-                msg : "failed to execute operation: "+error.message,
+                msg : "failed to execute operation: "+error.msg,
                 action : action,
 
             }

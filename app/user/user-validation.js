@@ -5,6 +5,7 @@ const { check, validationResult } = require('express-validator/check');
 const CONFIG  = require('../../config');
 const userDal = require('../user/user-dal');
 
+//todo: make password validation more thorough, password should include [number(s), char(s), symbol(s) and have length >= 8]
 exports.update = async (request, response, next) => {
     if(request.body.name !== undefined) {
         request.check('name')
@@ -22,9 +23,11 @@ exports.update = async (request, response, next) => {
             })
             .withMessage("An account already exists with this email");
     }
-
-
-    //todo: make password validation more thorough, password should include [number(s), char(s), symbol(s) and have length >= 8]
+    if(request.body.password !== undefined) {
+        request.check('password')
+            .exists().withMessage("password is required")
+            .isLength({min: 6}).withMessage("password should be a minimum of 6 characters");
+    }
     if(request.body.role) {
         request.check('role')
             .custom(role => {
@@ -32,24 +35,13 @@ exports.update = async (request, response, next) => {
                     return role
                 }
                 return false;
-            }).withMessage(`role can't be out of (${CONFIG.ROLES})`);
+            }).withMessage(`role must be from one of these (${CONFIG.ROLES})`);
     }
-
-    const errors = await request.getValidationResult();
-    if(!errors.isEmpty()){
-        response.status(400).json({
-            status : 400,
-            type: "error",
-            errors: errors.array()
-        });
-    }
-    else{
-        next();
-    }
+    errorHandler(request, response, next)
 };
 
-exports.errorHandler = (request, response, next)=>{
-    const errors = validationResult(request);
+async function errorHandler (request, response, next) {
+    const errors = await request.getValidationResult();
     if(!errors.isEmpty()){
         response.status(400).json({
             status : 400,

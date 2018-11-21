@@ -7,8 +7,10 @@ const userTestConfig = require('./user-test-config');
 const data = require('../../config/test-data');
 
 describe("User-Controller Tests",()=>{
-    const {name, emailNew, email, invalidEmail, fakeEmail, password, fakePassword, role} = data;
+    const {name, emailNew, email, invalidEmail, password, shortPassword} = data;
+
     var token, id = "";
+
     beforeEach(async ()=>{
         userTestConfig.deleteAll();
         userInfo = await userTestConfig.setupUser();
@@ -18,9 +20,9 @@ describe("User-Controller Tests",()=>{
 
     describe('Users Retrieving Tests', () => {
 
-        it('Should fail to retrieve a user without the appropriate user role', async ()=>{
+        it('Should fail to retrieve users if requesting user role isn\'t ADMIN', async ()=>{
             userTestConfig.deleteAll();
-            await userTestConfig.signUp({name, password, email, role});
+            await userTestConfig.signUp({password, email});
             let response = await userTestConfig.signIn({password, email});
             id = response.body.data._id;
             token = response.body.data.token;
@@ -37,7 +39,7 @@ describe("User-Controller Tests",()=>{
 
         });
 
-        it('Should retrieve a list of saved users', async () => {
+        it('Should retrieve users if requesting user role is ADMIN', async () => {
             userTestConfig.deleteAll();
             await userTestConfig.signUp({name, password, email, role:"ADMIN"});
             let response = await userTestConfig.signIn({password, email});
@@ -52,12 +54,11 @@ describe("User-Controller Tests",()=>{
             expect(body.status).to.equal(200);
             expect(body.data).to.be.a('array');
             expect(body.data).to.have.lengthOf(1);
-            expect(body.data[0]).to.have.property('name').equal(name);
             expect(body.data[0]).to.have.property('email').equal(email);
         });
 
         it('Should retrieve a single saved user', async () => {
-            response = await userTestConfig.getUser(id, token);
+            let response = await userTestConfig.getUser(id, token);
 
             body = response.body;
             expect(response.status).to.equal(200);
@@ -65,12 +66,11 @@ describe("User-Controller Tests",()=>{
             expect(body.status).to.equal(200);
             expect(body.data).to.be.a('array');
             expect(body.data).to.have.lengthOf(1);
-            expect(body.data[0]).to.have.property('name').equal(name);
             expect(body.data[0]).to.have.property('email').equal(email);
         });
 
         it('Should fail to retrieve a non existent user', async () => {
-            response = await userTestConfig.getUser(new mongoose.mongo.ObjectId(), token);
+            let response = await userTestConfig.getUser(new mongoose.mongo.ObjectId(), token);
 
             body = response.body;
             expect(response.status).to.equal(404);
@@ -78,8 +78,45 @@ describe("User-Controller Tests",()=>{
             expect(body.errors).to.be.a('array');
             expect(body.errors).to.have.lengthOf(1);
             expect(body.errors.some(err => err.msg.includes('user'))).to.be.true;
-            expect(body.errors.some(err => err.msg.includes("doesn't exist"))).to.be.true;
             expect(body).to.have.property('status').equal(404);
+        });
+
+    });
+
+    describe('User removing tests',()=>{
+
+        it('Should fail to remove any user when provided with an invalid user id', async ()=>{
+            response = await userTestConfig.removeUser(new mongoose.mongo.ObjectId(), token);
+            const body = response.body;
+
+            expect(response.status).to.equal(404);
+            expect(body).to.be.a('object');
+            expect(body).to.have.property('type').equal('error');
+            expect(body.errors).to.be.an('array');
+            expect(body.errors).to.be.a.lengthOf(1);
+            expect(body.errors.some(err => err.msg.includes('user'))).to.be.true;
+            expect(body).to.have.property('status').equal(404);
+        });
+
+        it('Should remove a user when provided with valid user id', async ()=>{
+            response = await userTestConfig.removeUser(id, token);
+            body = response.body;
+
+            expect(response.status).to.equal(200);
+            expect(body.status).to.equal(200);
+            expect(body.data).to.be.a('array');
+            expect(body.type).to.equal('success');
+
+            response = await userTestConfig.getUser(id, token);
+            body = response.body;
+
+            expect(response.status).to.equal(404);
+            expect(body).to.have.property('type').to.equal('error');
+            expect(body.errors).to.be.a('array');
+            expect(body.errors).to.have.lengthOf(1);
+            expect(body.errors.some(err => err.msg.includes('user'))).to.be.true;
+            expect(body).to.have.property('status').equal(404);
+
         });
 
     });
@@ -100,7 +137,7 @@ describe("User-Controller Tests",()=>{
 
         });
 
-        it('Should update email with the new information provided', async ()=>{
+        it('Should update email when provided with valid email', async ()=>{
             response = await userTestConfig.updateUser(id, {email: emailNew}, token);
 
             body = response.body;
@@ -113,10 +150,36 @@ describe("User-Controller Tests",()=>{
             expect(body.data[0].email).to.equal(emailNew);
         });
 
-    });
+        it('Should fail to update password when provided with invalid password', async ()=>{
+            response = await userTestConfig.updateUser(id, {password: shortPassword}, token);
+            const body = response.body;
 
+            expect(response.status).to.equal(400);
+            expect(body).to.be.a('object');
+            expect(body).to.have.property('type').equal('error');
+            expect(body.errors).to.be.an('array');
+            expect(body.errors).to.be.a.lengthOf(1);
+            expect(body.errors.some(err => err.msg.includes('password'))).to.be.true;
+            expect(body).to.have.property('status').equal(400);
+
+        });
+
+        it('Should update password when provided with valid email', async ()=>{
+            response = await userTestConfig.updateUser(id, {email: emailNew}, token);
+
+            body = response.body;
+            expect(response.status).to.equal(200);
+            expect(body.status).to.equal(200);
+            expect(body.data).to.be.a('array');
+            expect(body.type).to.equal('success');
+            expect(body.data).to.have.lengthOf(1);
+            expect(body.data[0]._id).to.equal(id);
+            expect(body.data[0].email).to.equal(emailNew);
+        });
+    });
 
     afterEach(() => {
         return userTestConfig.deleteAll();
     });
+
 });

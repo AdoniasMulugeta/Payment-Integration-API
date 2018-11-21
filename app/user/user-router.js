@@ -9,16 +9,6 @@ const accessControl  = require("../auth/access-control");
 
 //define http get request route
 
-router.get ('/',
-    authController.tokenValidator,
-    accessControl.role.ADMIN,
-    userController.getUsers
-);
-
-router.get ('/:id',
-    authController.tokenValidator,
-    userController.getUser
-);
 
 router.post ('/signup',
     authValidator.signUp,
@@ -28,6 +18,16 @@ router.post ('/signup',
 router.post ('/signin',
     authValidator.signIn,
     authController.signIn
+);
+
+router.get ('/',
+    authController.tokenValidator,
+    accessControl.role.ADMIN,
+    userController.getUsers
+);
+router.get ('/:id',
+    authController.tokenValidator,
+    userController.getUser
 );
 
 router.put ('/:id',

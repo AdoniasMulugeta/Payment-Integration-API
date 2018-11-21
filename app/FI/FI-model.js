@@ -7,8 +7,8 @@ const CONFIG   = require("../../config");
 // define the schema for the model
 const FIModel = new mongoose.Schema({
     name        : { type : String, required: true},
-    api_uri     : { type : String , required: true},
-    api_uri_alt : { type : String , required: true},
+    api         : { type : String , required: true},
+    api_alt     : { type : String },
     type        : { type : String, enum : CONFIG.FI_TYPES},
     address     : { type : String },
     enabled     : { type : Boolean, default: true, required: true},

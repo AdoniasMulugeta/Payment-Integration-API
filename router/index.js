@@ -8,8 +8,25 @@ const accessControl  = require('../app/auth/access-control');
 
 
 module.exports = app => {
-    app.use('/users', userRouter);
-    app.use('/accounts/:uid', authController.tokenValidator, accountRouter);
-    app.use('/clients', authController.tokenValidator, clientRouter);
-    app.use('/fi', authController.tokenValidator, accessControl.role.ADMIN, FIRouter);
+
+    app.use('/users',
+        userRouter
+    );
+
+    app.use('/accounts/:uid',
+        authController.tokenValidator,
+        accountRouter
+    );
+
+    app.use('/clients',
+        authController.tokenValidator,
+        clientRouter
+    );
+
+    app.use('/fis',
+        authController.tokenValidator,
+        accessControl.role.ADMIN,
+        FIRouter
+    );
+
 };

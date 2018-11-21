@@ -10,21 +10,23 @@ exports.signUp = (request, response, next) => {
             if (user.length > 0) throw new Error();
             else return user;
         })
-        .withMessage("An account already exists with this email");
+        .withMessage("An account already exists with this email")
+        .isLength({min: 3}).withMessage("email should be a minimum of 3 characters");
 
     request.check('password')
-        .exists().withMessage("password is required");
+        .exists().withMessage("password is required")
+        .isLength({min: 6}).withMessage("password should be a minimum of 6 characters");
 
     checkErrors(request, response, next);
 };
 
 exports.signIn = (request, response, next)=> {
     request.check('email')
-        .exists().withMessage("email is required")
-        .isEmail().withMessage("invalid email");
+        .exists().withMessage("email is required");
 
-        request.check('password')
-            .exists().withMessage("password is required");
+    request.check('password')
+        .exists().withMessage("password is required");
+
 
     checkErrors(request, response, next);
 };

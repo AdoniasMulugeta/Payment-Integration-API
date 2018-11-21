@@ -10,18 +10,18 @@ exports.deleteAll = async () => {
     await userModel.deleteMany({});
 };
 
-exports.setupUser = async () => {
-    const {name, email, password, role} = data;
-    await this.signUp({name, email, password, role});
+exports.setupUser = async (role = "USER") => {
+    const {email, password} = data;
+    let newUser = await this.signUp({email, password, role});
     let response = await this.signIn({email, password});
     let token = response.body.data.token;
     let id = response.body.data._id;
     return {token:token, id:id};
 };
 
-exports.signUp = async ({name, email, password, role}) => {
+
+exports.signUp = async ({email, password, role}) => {
     return await request(app).post('/users/signup').send({
-        name: name,
         email: email,
         password: password,
         role: role
@@ -42,4 +42,8 @@ exports.getUsers = async token => {
 };
 exports.updateUser = async (id, data, token)=>{
     return await request(app).put('/users/'+id).set('Authorization', "bearer "+token).send(data);
+};
+
+exports.removeUser = async (id, token)=>{
+    return await request(app).delete('/users/'+id).set('Authorization', "bearer "+token)
 };

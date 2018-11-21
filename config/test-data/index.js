@@ -7,6 +7,8 @@ module.exports = {
     invalidEmail: "non email",
     fakeEmail : "fake@email.com",
     password: "admin1234",
+    shortPassword : "1234",
+    emptyPassword : "",
     fakePassword : "fake-password",
     role: "USER",
     roleAdmin : "ADMIN",

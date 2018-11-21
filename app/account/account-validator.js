@@ -5,6 +5,7 @@ const accountDal = require('./account-dal');
 exports.createAccount = async (request, response, next) => {
     request.check('name')
         .exists().withMessage("name is required");
+
     checkErrors(request, response, next)
 };
 

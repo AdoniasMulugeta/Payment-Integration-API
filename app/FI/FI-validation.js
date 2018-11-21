@@ -7,9 +7,9 @@ exports.create = async (request, response, next) => {
 
     request.check('api')
         .exists().withMessage("api uri is required")
-        .isLength({min: 5})
-        .isURL().withMessage("api uri is not valid url")
-        .withMessage("api uri should be min of 5 characters");
+        .isLength({min: 5}).withMessage("api uri should be min of 5 characters")
+        // .isDataURI().withMessage("api uri is not valid url");
+
 
     checkErrors(request, response, next)
 };
@@ -25,7 +25,7 @@ exports.update = async (request, response, next) => {
         request.check('api')
             .isLength({min: 5})
             .withMessage("api uri should be min of 5 characters")
-            .isURL().withMessage("api uri is not valid url")
+            // .isURL().withMessage("api uri is not valid url")
     }
 
     checkErrors(request, response, next)

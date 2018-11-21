@@ -1,5 +1,6 @@
 //import custom modules
 const CONFIG = require("../../config");
+const responseFormatter = require('../../lib/response-formatter');
 const userDal = require("./user-dal");
 const bcrypt = require('bcryptjs');
 
@@ -44,6 +45,7 @@ exports.updateUser = async (request, response)=>{
 exports.removeUser = async (request, response)=>{
     try{
         const result = await userDal.removeUser(request.params.id);
+        if(!result) throw new Error('No user found with id');
         sendSuccess(response, result)
     }
     catch(error){
@@ -60,9 +62,7 @@ function sendError(response, error) {
         errors  : [
             {
                 type : "internal server error",
-                msg : "failed to execute operation: "+error.message,
-                action : action,
-
+                msg : "failed to execute operation: "+error.msg,
             }
         ]
     })

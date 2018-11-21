@@ -24,6 +24,7 @@ exports.getFIs = async (request, response)=>{
 
 exports.createFI = async (request, response)=>{
     try{
+        request.body.created_by = request._id;
         const FI = await FIDal.createFI(request.body);
         sendSuccess(response, FI)
     }
@@ -61,7 +62,7 @@ function sendError(response, error) {
         errors  : [
             {
                 type : "Internal Error",
-                msg : "failed to execute operation:"+error.message,
+                msg : error.msg || error.message,
             }
         ]
     })
