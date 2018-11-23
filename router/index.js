@@ -5,6 +5,7 @@ const clientRouter   = require('../app/client/client-router');
 const FIRouter       = require('../app/FI/FI-router');
 const authController = require('../app/auth/auth-controller');
 const accessControl  = require('../app/auth/access-control');
+const requestParser  = require('../lib/requestParser');
 
 
 module.exports = app => {
@@ -15,6 +16,8 @@ module.exports = app => {
 
     app.use('/users/:uid/accounts',
         authController.tokenValidator,
+        requestParser.params.uid,
+        authController.userExists,
         accountRouter
     );
 
