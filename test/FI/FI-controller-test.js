@@ -8,8 +8,6 @@ const userTestConfig = require('../user/user-test-config');
 const data = require('../../config/test-data');
 
 describe("FI controller Tests",()=>{
-    const {name, email, password} = data;
-
     beforeEach(async ()=>{
         FITestConfig.deleteAll();
         userTestConfig.deleteAll();
@@ -23,7 +21,6 @@ describe("FI controller Tests",()=>{
             let response = await FITestConfig.getFIs(token);
             body = response.body;
 
-            body = response.body;
             expect(response.status).to.equal(403);
             expect(body.status).to.equal(403);
             expect(body).to.have.property('type').to.equal('error');

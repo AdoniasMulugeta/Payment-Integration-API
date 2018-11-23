@@ -19,6 +19,14 @@ exports.setupUser = async (role = "USER") => {
     return {token:token, id:id};
 };
 
+exports.mSetupUser = async ({email, password, role}) => {
+    await this.signUp({email, password, role});
+    let response = await this.signIn({email, password});
+    let token = response.body.data.token;
+    let id = response.body.data._id;
+    return {token, id};
+};
+
 
 exports.signUp = async ({email, password, role}) => {
     return await request(app).post('/users/signup').send({

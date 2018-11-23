@@ -6,30 +6,41 @@ const userTestConfig = require('../user/user-test-config');
 const FiTestConfig = require('../FI/FI-test-config');
 let token = '';
 
-async function setupUser(){
-    const {name, email, password, role} = data;
-    await userTestConfig.signUp({name, email, password, role});
-    const response  = await userTestConfig.signIn(email, password);
-    token = response.body.data.token;
-    id = response.body._id;
-    return {token, id}
+exports.setupAccount = async ({FIName}) => {
+    const fi_id = await FiTestConfig.setupFI({fi_name: FIName});
+    const {id, token} = await userTestConfig.setupUser('ADMIN');
+    return {fi_id, client_id:id, token}
 };
 
-exports.setupAccount = async () => {
-    const fi_id = FiTestConfig.setupFI();
-    const {FIName, api} = data;
-    const {token} = await userTestConfig.setupUser('ADMIN');
-    let newFI = {
-        name : FIName,
-        api : api
-    };
-    const response = await this.createFI(newFI, token);
-    return id = response.body.data[0]._id;
+exports.mSetupAccount = async ({email, password, role, FIName}) => {
+    const fi_id = await FiTestConfig.setupFI({fi_name: FIName});
+    const {id, token} = await userTestConfig.mSetupUser({email, password, role});
+    return {fi_id, client_id:id, token}
 };
 
 exports.deleteAll = async () => {
     await accountModel.deleteMany({});
+    userTestConfig.deleteAll();
+    FiTestConfig.deleteAll();
 };
-exports.createAccount = async () => {
-    request.post("/accounts/create").set('authorization',`bearer ${token}`);
+
+
+exports.createAccount = async (uid, data, token)=>{
+    return await request(app).post(`/users/${uid}/accounts`).set('Authorization', "bearer "+token).send(data);
+};
+
+exports.getAccount = async (id, uid, token) => {
+    return await request(app).get(`/users/${uid}/accounts/${id}`).set('Authorization', "bearer "+token);
+};
+
+exports.getAccounts = async (uid, token) => {
+    return await request(app).get(`/users/${uid}/accounts`).set('Authorization', "bearer "+token);
+};
+
+exports.updateAccount = async (id, uid, data, token)=>{
+    return await request(app).put(`/users/${uid}/accounts/${id}`).set('Authorization', "bearer "+token).send(data);
+};
+
+exports.removeAccount = async (id, uid, token)=>{
+    return await request(app).delete(`/users/${uid}/accounts/${id}`).set('Authorization', "bearer "+token)
 };

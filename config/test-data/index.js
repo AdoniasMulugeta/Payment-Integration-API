@@ -12,5 +12,8 @@ module.exports = {
     fakePassword : "fake-password",
     role: "USER",
     roleAdmin : "ADMIN",
-    fakeRole: "FAKE-ROLE"
+    fakeRole: "FAKE-ROLE",
+    FIName: "CBE",
+    api : "https://api.cbe/v1/",
+    fi_id : ""
 };
