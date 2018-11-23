@@ -1,9 +1,16 @@
+//import custom modules
+const FIDal = require('./FI-dal');
 
 exports.create = async (request, response, next) => {
     request.check('name')
         .exists().withMessage("name is required")
         .isLength({min: 1, max: 50})
-        .withMessage("name should be a min of 1 character and a max of 50 characters");
+        .withMessage("name should be a min of 1 character and a max of 50 characters")
+        .custom(async name => {
+            const FIs = await FIDal.getFIs({name: name});
+            if (FIs.length > 0) throw new Error();
+            return true;
+        }).withMessage("a financial institute already exists with this name");
 
     request.check('api')
         .exists().withMessage("api uri is required")
@@ -19,6 +26,11 @@ exports.update = async (request, response, next) => {
         request.check('name')
             .isLength({min: 1, max: 50})
             .withMessage("name should be min 1 character and max 50 characters")
+            .custom(async name => {
+                const FIs = await FIDal.getFIs({name: name});
+                if (FIs.length > 0) throw new Error();
+                return true;
+            }).withMessage("a financial institute already exists with this name");
     }
 
     if(request.body.api !== undefined){
