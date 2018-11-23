@@ -12,7 +12,7 @@ describe("User-Controller Tests",()=>{
     var token, id = "";
 
     beforeEach(async ()=>{
-        userTestConfig.deleteAll();
+        await userTestConfig.deleteAll();
         userInfo = await userTestConfig.setupUser();
         token = userInfo.token;
         id = userInfo.id;

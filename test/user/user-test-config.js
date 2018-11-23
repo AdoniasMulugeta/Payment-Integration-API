@@ -12,7 +12,7 @@ exports.deleteAll = async () => {
 
 exports.setupUser = async (role = "USER") => {
     const {email, password} = data;
-    let newUser = await this.signUp({email, password, role});
+    await this.signUp({email, password, role});
     let response = await this.signIn({email, password});
     let token = response.body.data.token;
     let id = response.body.data._id;

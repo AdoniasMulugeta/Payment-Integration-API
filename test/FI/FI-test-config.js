@@ -4,8 +4,17 @@ const app = require('../../app');
 const FIModel = require('../../app/FI/FI-model');
 const request = require('supertest');
 const data = require('../../config/test-data');
-
-
+const userTestConfig = require('../user/user-test-config');
+exports.setupFI = async () => {
+    const {FIName, api} = data;
+    const {token} = await userTestConfig.setupUser('ADMIN');
+    let newFI = {
+        name : FIName,
+        api : api
+    };
+    const response = await this.createFI(newFI, token);
+    return id = response.body.data[0]._id;
+};
 
 exports.deleteAll = async () => {
     await FIModel.deleteMany({});

@@ -6,7 +6,7 @@ const expect = require('chai').expect;
 const accountTestConfig = require('./account-test-config');
 
 const data = require('../../config/test-data');
-
+//todo finish writing account controller tests
 describe("Account Controller Tests", ()=>{
    const {name, email, password, role} = data;
    beforeEach(async ()=>{
