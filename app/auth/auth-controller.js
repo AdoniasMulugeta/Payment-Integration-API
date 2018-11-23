@@ -1,3 +1,5 @@
+
+
 //importing third-party modules
 const bcrypt = require('bcryptjs');
 const jwt    = require('jsonwebtoken');
@@ -6,14 +8,14 @@ const jwt    = require('jsonwebtoken');
 const CONFIG = require('../../config');
 const STATIC = require('../../lib/STATIC');
 const userDal = require('../user/user-dal');
-const responseFormatter = require('../../lib/respond');
+const sendError = require('../../lib/respond').error;
 
 //middleware to handle user Login
 exports.signIn  = async (request, response) => {
     const data = request.body;
     let user = await userDal.getUserWithPassword({email : data.email});
     if(!user) {
-        responseFormatter.error(response, {
+        sendError(response, {
             status:400,
             location: "internal",
             msg:"authentication failed",
@@ -25,7 +27,7 @@ exports.signIn  = async (request, response) => {
     var passwordsMatch = await bcrypt.compare(data.password, user.password);
 
     if(!passwordsMatch){
-        responseFormatter.error(response, {
+        sendError(response, {
             status:400,
             location: null,
             msg:"authentication failed",
@@ -75,7 +77,7 @@ exports.signUp = async (request, response) => {
 exports.tokenValidator = async (request, response, next)=>{
     const token = request.headers['authorization'];
     if(!token){
-        responseFormatter.error(response, {
+        sendError(response, {
             status:400,
             location: "header",
             msg:"No authentication token found in header",
@@ -89,7 +91,7 @@ exports.tokenValidator = async (request, response, next)=>{
         request._id  = request.params.id || payload._id;
         const user = await userDal.getUserById(request._id);
         if(!user){
-            responseFormatter.error(response, {
+            sendError(response, {
                 status:404,
                 location: "uri",
                 msg  :"user not found",
@@ -102,7 +104,7 @@ exports.tokenValidator = async (request, response, next)=>{
         next();
     }
     catch(error) {
-        responseFormatter.error(response, {
+        sendError(response, {
             status:400,
             location: "internal",
             msg:error.message,
@@ -110,4 +112,21 @@ exports.tokenValidator = async (request, response, next)=>{
             value:token
         });
     }
+};
+
+exports.userExists = async (request, response, next)=>{
+    if(request.client_id){
+        uid =  request.client_id;
+        await userDal.getUserById(uid) ?  next() : sendError(response, {
+            status:404,
+            location: "url param",
+            msg  :"user not found",
+            param:"uid",
+            value:request.client_id
+        });
+    }
+    else {
+        sendError(request, response);
+    }
+
 };

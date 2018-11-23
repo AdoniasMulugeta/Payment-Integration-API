@@ -5,6 +5,7 @@ const accountDal = require("./account-dal");
 exports.createAccount = async  (request, response) =>{
     try{
         request.body.balance = 0;
+        request.body.client_id = request.client_id;
         const account = await accountDal.createAccount(request.body);
         sendSuccess(response, account)
     }
@@ -25,7 +26,7 @@ exports.getAccount = async  (request, response) =>{
 
 exports.getAccounts = async  (request, response) =>{
     try{
-        const accounts = await accountDal.getAccounts({});
+        const accounts = await accountDal.getAccounts({client_id : request.client_id});
         sendSuccess(response, accounts)
     }
     catch(error){
