@@ -13,7 +13,7 @@ module.exports = app => {
         userRouter
     );
 
-    app.use('/accounts/:uid',
+    app.use('/users/:uid/accounts',
         authController.tokenValidator,
         accountRouter
     );

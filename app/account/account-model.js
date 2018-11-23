@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 const accountModel = new mongoose.Schema({
-    FID        : { type : mongoose.ObjectId , ref: "FI", required: true},
+    fi_id      : { type : mongoose.ObjectId , ref: "FI", required: true},
     client_id  : { type : mongoose.ObjectId , ref: "client" , required: true},
     balance    : { type : Number, required: true},
     enabled    : { type : Boolean , default : true, required: true },

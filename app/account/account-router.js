@@ -14,49 +14,55 @@ router.get ('/',
 
 router.get ('/:account',
     accessControl.role.USER,
-    accountValidator.checkAccount,
+    accountValidator.checkAccountExists,
     accountController.getAccount
 );
 
 router.get ('/:account/balance',
     accessControl.role.USER,
-    accountValidator.checkAccount,
+    accountValidator.checkAccountExists,
     accountController.getBalance
 );
 
 router.get ('/:account/transactions',
     accessControl.role.USER,
-    accountValidator.checkAccount,
+    accountValidator.checkAccountExists,
     accountController.getTransactions
 );
 
 router.get ('/:account/transactions/:id',
     accessControl.role.USER,
-    accountValidator.checkAccount,
+    accountValidator.checkAccountExists,
     accountController.getTransactions
 );
 
 router.post ('/:account/transfer',
     accessControl.role.USER,
-    accountValidator.checkAccount,
+    accountValidator.checkAccountExists,
     accountController.transfer
 );
 
 router.post ('/:account/transactions/:id/refund',
     accessControl.role.USER,
-    accountValidator.checkAccount,
+    accountValidator.checkAccountExists,
     accountController.refund
+);
+
+router.post('/',
+    accessControl.role.USER,
+    accountValidator.createAccount,
+    accountController.createAccount
 );
 
 router.put ('/:account',
     accessControl.role.USER,
-    accountValidator.checkAccount,
+    accountValidator.checkAccountExists,
     accountController.updateAccount
 );
 
 router.delete ('/:account',
     accessControl.role.USER,
-    accountValidator.checkAccount,
+    accountValidator.checkAccountExists,
     accountController.removeAccount
 );
 

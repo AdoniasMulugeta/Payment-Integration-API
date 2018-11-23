@@ -3,10 +3,56 @@ const accountDal = require("./account-dal");
 
 
 exports.createAccount = async  (request, response) =>{
-    const account = await accountDal.createAccount(request.body);
-    account ? sendSuccess(response, account) :
-        sendError(response, 500, 'Failed to create a new account')
+    try{
+        request.body.balance = 0;
+        const account = await accountDal.createAccount(request.body);
+        sendSuccess(response, account)
+    }
+    catch(error){
+        sendError(response, error)
+    }
 };
+
+exports.getAccount = async  (request, response) =>{
+    try{
+        const account = await accountDal.getAccountById(request.params.account);
+        sendSuccess(response, account)
+    }
+    catch(error){
+        sendError(response, error)
+    }
+};
+
+exports.getAccounts = async  (request, response) =>{
+    try{
+        const accounts = await accountDal.getAccounts({});
+        sendSuccess(response, accounts)
+    }
+    catch(error){
+        sendError(response, error)
+    }
+};
+
+exports.updateAccount = async  (request, response) =>{
+    try{
+        const account = await accountDal.updateAccount(request.params.account, request.body);
+        sendSuccess(response, account)
+    }
+    catch(error){
+        sendError(response, error)
+    }
+};
+
+exports.removeAccount = async  (request, response) =>{
+    try{
+        const account = await accountDal.removeAccount(request.params.account);
+        sendSuccess(response, account)
+    }
+    catch(error){
+        sendError(response, error)
+    }
+};
+
 
 exports.transfer = async  (request, response) =>{
 
@@ -20,30 +66,6 @@ exports.getBalance = async  (request, response) =>{
     var balance = {balance: 200};
 };
 
-exports.getAccount = async  (request, response) =>{
-    const account = await accountDal.getAccount(request.params.id);
-    account ? sendSuccess(response, account) :
-        sendError(response, 404, `account with id "${request.params.id}" doesn't exist.`)
-};
-
-exports.getAccounts = async  (request, response) =>{
-    const accounts = await accountDal.getAccounts({});
-    sendSuccess(response, accounts)
-};
-
-exports.updateAccount = async  (request, response) =>{
-    const account = await accountDal.updateAccount(request.params.id);
-    account ? sendSuccess(response, account) :
-        sendError(response, 404, `account with id "${request.params.id}" doesn't exist.`)
-};
-
-exports.removeAccount = async  (request, response) =>{
-    const account = await accountDal.removeAccount(request.params.id);
-    account ? sendSuccess(response, account) :
-        sendError(response, 500, "Failed to remove account");
-
-};
-
 exports.searchAccounts = async  (request, response) =>{
 
 };
@@ -55,24 +77,25 @@ exports.getTransactions = async  (request, response) =>{
 
 
 //helper functions
-function sendError(response, status, error) {
-    response.status(status).json({
+function sendError(response, error) {
+    response.status(500).json({
         type : "error",
-        status: status,
-        collection : "Accounts",
+        status: 500,
         errors  : [
             {
-                msg : error
+                type : "Internal Error",
+                msg : error.msg || error.message,
             }
         ]
     })
 }
 function sendSuccess(response, data) {
-    if(!Array.isArray(data)) data = [data];
+    if(!data) data = [];
+    else if(!Array.isArray(data)) data = [data];
     response.status(200).json({
         type: "success",
         status: 200,
         collection : "Accounts",
-        data:data
+        data : data || []
     })
 }
