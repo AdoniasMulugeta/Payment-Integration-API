@@ -6,7 +6,7 @@ const jwt    = require('jsonwebtoken');
 const CONFIG = require('../../config');
 const STATIC = require('../../lib/STATIC');
 const userDal = require('../user/user-dal');
-const responseFormatter = require('../../lib/response-formatter');
+const responseFormatter = require('../../lib/respond');
 
 //middleware to handle user Login
 exports.signIn  = async (request, response) => {
