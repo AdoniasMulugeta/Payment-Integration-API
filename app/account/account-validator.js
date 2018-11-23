@@ -6,9 +6,6 @@ exports.createAccount = async (request, response, next) => {
     request.check('fi_id')
         .exists().withMessage("financial institution ID is required");
 
-    request.check('client_id')
-        .exists().withMessage("Client ID is required");
-
     checkErrors(request, response, next)
 };
 
