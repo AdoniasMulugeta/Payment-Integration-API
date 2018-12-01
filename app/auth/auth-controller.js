@@ -6,9 +6,9 @@ const jwt    = require('jsonwebtoken');
 
 //importing custom modules
 const CONFIG = require('../../config');
-const STATIC = require('../../lib/STATIC');
+const CONSTANTS = require('../../lib/constatnts');
 const userDal = require('../user/user-dal');
-const sendError = require('../../lib/respond').error;
+const sendError = require('../../lib/res').error;
 
 //middleware to handle user Login
 exports.signIn  = async (request, response) => {

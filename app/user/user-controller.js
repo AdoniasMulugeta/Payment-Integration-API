@@ -1,6 +1,6 @@
 //import custom modules
 const CONFIG = require("../../config");
-const responseFormatter = require('../../lib/respond');
+const res = require('../../lib/res');
 const userDal = require("./user-dal");
 const bcrypt = require('bcryptjs');
 

@@ -1,10 +1,10 @@
-const STATIC = require('../../lib/STATIC');
+const CONSTANTS = require('../../lib/constatnts');
 exports.role = {
     ADMIN : (request, response, next) => {
-            request.role === STATIC.ROLE.ADMIN ? next() : sendError(request, response)
+            request.role === CONSTANTS.ROLE.ADMIN ? next() : sendError(request, response)
     },
     USER :  (request, response, next) => {
-        request.role === STATIC.ROLE.USER || STATIC.ROLE.ADMIN ? next() : sendError(request, response)
+        request.role === CONSTANTS.ROLE.USER || CONSTANTS.ROLE.ADMIN ? next() : sendError(request, response)
     }
 };
 exports.OWNER = (request, response, next)=>{
